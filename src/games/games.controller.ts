@@ -1,15 +1,19 @@
 import { Controller, Get, Post } from "@nestjs/common";
+import { GamesService } from "./games.service";
 
 @Controller('games')
 export class GamesController {
+  constructor(private gamesService: GamesService) {}
+
   @Get()
   findAll(){
-    return 'Search for all games.'
+    return this.gamesService.findAll();
+
   }
 
   @Post()
   create(){
-    return 'Create new game.'
+    return this.gamesService.create();
   }
 
 }
