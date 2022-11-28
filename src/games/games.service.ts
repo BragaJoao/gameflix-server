@@ -1,20 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { CreateGameDto } from "./dto/create-game.dto";
-import { Games } from "./entities/game.entity";
+import { randomUUID } from "crypto";
+import { GameDto } from "./dto/gameInput.dto";
+import { IGameEntity } from "./entities/game.entity";
+import { GameRepository } from "./games.repository";
+
 
 @Injectable()
 export class GamesService{
-  games: Games[] = [];
+  constructor(private  readonly gameRepository: GameRepository){}
 
-  findAll() {
-    return this.games
+  async getAllGames(): Promise<IGameEntity[]> {
+    return await this.gameRepository.findAllGames();
   }
 
-  create(createGameDto: CreateGameDto) {
-    const game: Games = { id: 'um Id qualquer', ...createGameDto }
+  async getGameById(gameId: string): Promise<IGameEntity> {
+    const foundGame = await this.gameRepository.findOneGame(gameId)
+    return foundGame;
+  }
 
-    this.games.push(game)
-
-    return game
+  async createGame(game: GameDto): Promise<IGameEntity> {
+    const gameEntity = { ...game, id: randomUUID() }
+    const createdGame = await this.gameRepository.createGame(gameEntity)
+    return createdGame;
   }
 }
