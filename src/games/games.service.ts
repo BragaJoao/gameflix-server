@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
 import { GameDto } from "./dto/gameInput.dto";
-import { PartialGameDto } from "./dto/partialGameInput.dto";
 import { IGameEntity } from "./entities/game.entity";
 import { GameRepository } from "./games.repository";
 
@@ -16,6 +15,7 @@ export class GamesService{
 
   async getGameById(gameId: string): Promise<IGameEntity> {
     const foundGame = await this.gameRepository.findOneGame(gameId)
+
     return foundGame;
   }
 

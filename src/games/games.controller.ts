@@ -2,7 +2,6 @@ import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post,
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { GameDto } from "./dto/gameInput.dto";
-import { PartialGameDto } from "./dto/partialGameInput.dto";
 import { IGameEntity } from "./entities/game.entity";
 import { GamesService } from "./games.service";
 
