@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
+import { GameDto } from "./dto/gameInput.dto";
 import { PartialGameDto } from "./dto/partialGameInput.dto";
 import { IGameEntity } from "./entities/game.entity";
 
@@ -23,10 +24,10 @@ export class GameRepository {
     return CreatedGame
   }
 
-  async updateGame(game: PartialGameDto): Promise<IGameEntity>{
+  async updateGame(id:string, gameData: GameDto): Promise<IGameEntity>{
     const updatedGame = await this.prisma.games.update({
-      where: {id: game.id},
-      data: game,
+      where: {id: id},
+      data: gameData,
     });
     return updatedGame
   }

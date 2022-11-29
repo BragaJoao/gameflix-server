@@ -1,7 +1,8 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Res } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { GameDto } from "./dto/gameInput.dto";
+import { PartialGameDto } from "./dto/partialGameInput.dto";
 import { IGameEntity } from "./entities/game.entity";
 import { GamesService } from "./games.service";
 
@@ -34,6 +35,26 @@ export class GamesController {
     } catch (err){
       console.log(err);
       throw new BadRequestException(err.message)
+    }
+  }
+
+  @Patch(':id')
+  async updateGame(@Param('id') id: string, @Body() gameData: GameDto): Promise<IGameEntity>{
+    try{
+      return await this.service.updateGame(id, gameData)
+    }catch(err){
+      console.log(err);
+    }
+  }
+
+  @Delete(':id')
+  async deleGameById(@Param('id') gameId: string): Promise<string>{
+    const gameIsDeleted = await  this.service.deleteGameById(gameId);
+    console.log(gameIsDeleted);
+    if (gameIsDeleted) {
+      return 'Game deleted successfully';
+    } else {
+      return 'Game not found';
     }
   }
 

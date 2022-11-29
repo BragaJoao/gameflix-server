@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
 import { GameDto } from "./dto/gameInput.dto";
+import { PartialGameDto } from "./dto/partialGameInput.dto";
 import { IGameEntity } from "./entities/game.entity";
 import { GameRepository } from "./games.repository";
 
@@ -22,5 +23,20 @@ export class GamesService{
     const gameEntity = { ...game, id: randomUUID() }
     const createdGame = await this.gameRepository.createGame(gameEntity)
     return createdGame;
+  }
+
+  async updateGame(id:string, gameData: GameDto): Promise<IGameEntity>{
+    const updatedGame = await this.gameRepository.updateGame(id, gameData)
+    return updatedGame;
+  }
+
+  async deleteGameById(gameId: string): Promise<boolean>{
+    try {
+      await this.gameRepository.deleteGame(gameId);
+      return true;
+    } catch (err){
+      console.log(err);
+      return false
+    }
   }
 }
