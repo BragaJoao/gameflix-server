@@ -1,6 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
+import { HandleException } from "src/util/exceptions/exceptionsHelper";
 import { GameDto } from "./dto/gameInput.dto";
 import { IGameEntity } from "./entities/game.entity";
 import { GamesService } from "./games.service";
@@ -33,7 +34,7 @@ export class GamesController {
       response.status(201).send(result)
     } catch (err){
       console.log(err);
-      throw new BadRequestException(err.message)
+      HandleException(err)
     }
   }
 
@@ -42,7 +43,7 @@ export class GamesController {
     try{
       return await this.service.updateGame(id, gameData)
     }catch(err){
-      console.log(err);
+      HandleException(err);
     }
   }
 
