@@ -35,7 +35,7 @@ model Games {
   coverImageUrl      String
   description        String
   year               Int
-  imdbScore          Int
+  imdbScore          Float
   trailerYouTubeUrl  String
   gameplayYouTubeUrl String
   profile            Profile? @relation(fields: [profileId], references: [id])
