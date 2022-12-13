@@ -1,15 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { GenresService } from './genres.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
-import { UpdateGenreDto } from './dto/update-genre.dto';
+import { Response, response } from 'express';
+import { HandleException } from 'src/util/exceptions/exceptionsHelper';
 
 @Controller('genres')
 export class GenresController {
   constructor(private readonly genresService: GenresService) {}
 
   @Post()
-  create(@Body() createGenreDto: CreateGenreDto) {
-    return this.genresService.create(createGenreDto);
+create(@Body() { name }: CreateGenreDto, @Res() response: Response) {
+  try{
+    const result =  this.genresService.create({ name });
+
+    response.status(201).send(result)
+  } catch(err) {
+    HandleException(err)
+  }
+
   }
 
   @Get()
@@ -18,17 +26,23 @@ export class GenresController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.genresService.findOne(+id);
+  findOne(@Param('id') genreId: string) {
+    try{
+      return this.genresService.findOne(genreId);
+    } catch(err) {
+      console.log(err)
+      HandleException(err)
+    }
+
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGenreDto: UpdateGenreDto) {
-    return this.genresService.update(+id, updateGenreDto);
+  update(@Param('id') id: string, @Body() genreData: CreateGenreDto) {
+    return this.genresService.update(id, genreData);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.genresService.remove(+id);
+    return this.genresService.remove(id);
   }
 }

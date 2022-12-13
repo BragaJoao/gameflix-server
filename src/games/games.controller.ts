@@ -50,7 +50,7 @@ export class GamesController {
   @Delete(':id')
   async deleGameById(@Param('id') gameId: string): Promise<string>{
     const gameIsDeleted = await  this.service.deleteGameById(gameId);
-    console.log(gameIsDeleted);
+
     if (gameIsDeleted) {
       return 'Game deleted successfully';
     } else {

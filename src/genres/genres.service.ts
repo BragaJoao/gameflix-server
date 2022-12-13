@@ -1,26 +1,41 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
+import { IGenreEntity } from './entities/genre.entity';
+import { GenreRepository } from './genres.repository';
 
 @Injectable()
 export class GenresService {
-  create(createGenreDto: CreateGenreDto) {
-    return 'This action adds a new genre';
+  constructor(private readonly genreRepository: GenreRepository){}
+
+  async create(genre: CreateGenreDto):Promise<IGenreEntity> {
+    const genreEntity = {...genre, id: randomUUID()}
+    const createdGenre = await this.genreRepository.CreateGenre(genreEntity)
+    return  createdGenre
   }
 
-  findAll() {
-    return `This action returns all genres`;
+  async findAll():Promise<IGenreEntity[]> {
+    return await this.genreRepository.findAllGenres()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} genre`;
+  async findOne(genreId: string):Promise<IGenreEntity> {
+    const foundGenre = this.genreRepository.findOneGenre(genreId)
+    return foundGenre
   }
 
-  update(id: number, updateGenreDto: UpdateGenreDto) {
-    return `This action updates a #${id} genre`;
+  async update(id: string, genreData: CreateGenreDto):Promise<IGenreEntity> {
+    const updatedGenre = await this.genreRepository.UpdateGenre(id, genreData )
+    return updatedGenre
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} genre`;
+  async remove(id: string):Promise<boolean> {
+    try{
+      await this.genreRepository.DeleteGenres(id)
+      return true
+    } catch {
+      return false
+    }
+
   }
 }

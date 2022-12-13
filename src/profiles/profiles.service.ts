@@ -1,26 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ProfileDto } from './dto/profileInput.dto';
+import { PartialProfileDto } from './dto/partialProfileInput.dto';
+import { ProfileRepository } from './profiles.repository';
+import { Profiles } from './entities/profile.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ProfilesService {
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
+constructor(private readonly profileRepository: ProfileRepository){}
+
+  async create(dto: ProfileDto):Promise<Profiles> {
+    const id = randomUUID()
+    const createdProfile = await this.profileRepository.createProfile(dto, id)
+    return  createdProfile
   }
 
-  findAll() {
-    return `This action returns all profiles`;
+  async findAll():Promise<PartialProfileDto[]> {
+    return await this.profileRepository.findAllProfiles();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOne(profileId: string):Promise<PartialProfileDto> {
+    const foundProfile = await this.profileRepository.findOneProfile(profileId)
+    return foundProfile
   }
 
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
+  async update(id: string, profileData: ProfileDto):Promise<Profiles>
+  {
+    const updatedProfile = await this.profileRepository.updateProfile(id, profileData)
+    return
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
+  async remove(profileId: string):Promise<boolean> {
+    try {
+      await this.profileRepository.deleteProfile(profileId);
+      return true;
+    }catch(err) {
+        return false
+    }
   }
 }

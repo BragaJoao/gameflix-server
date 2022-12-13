@@ -5,7 +5,6 @@ import { PartialGameDto } from "./dto/partialGameInput.dto";
 import { IGameEntity } from "./entities/game.entity";
 
 @Injectable()
-
 export class GameRepository {
   constructor(private readonly prisma: PrismaService){}
 
