@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/userInput.dto';
+import { PartialUserDto } from './dto/partialUserInput.dto';
+import { IUserEntity } from './entities/user.entity';
+import { UserRepository } from './users.repository';
+import { randomUUID } from 'crypto';
+import { Exception } from 'src/util/exceptions/exception';
+import { Exceptions } from 'src/util/exceptions/exceptionsHelper';
+import { hash} from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly userRepository:UserRepository){}
+
+  async create(user: UserDto ): Promise<IUserEntity> {
+    const userEntity = {...user, id:randomUUID(), role: 'user'};
+    if (user.password.length <= 7) {
+      throw new Exception(
+        Exceptions.InvalidData,
+        'Password must have at least 7 characters',
+      );
+    }
+    const hashedPassword = await hash(user.password, 10);
+    userEntity.password = hashedPassword;
+
+    const createdUser = await this.userRepository.createUser(userEntity)
+    delete createdUser.password
+    return createdUser;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async getAllUsers():Promise<IUserEntity[]> {
+    return await this.userRepository.findAllUsers();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(gameId: string):Promise<IUserEntity> {
+    const foundUser = await this.userRepository.findOneUser(gameId);
+    return foundUser;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, userData: UserDto ):Promise<IUserEntity> {
+    const updatedUser = await this.userRepository.updateUser(id, userData)
+    return updatedUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(userId: string):Promise<boolean> {
+    try {
+      await this.userRepository.deleteUser(userId);
+      return true
+    } catch(err){
+      return false
+    }
   }
 }

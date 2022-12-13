@@ -13,6 +13,7 @@ async function bootstrap() {
     .setDescription('API to catalog a list of games.')
     .setVersion('1.0.0')
     .addTag('status')
+    .addTag('users')
     .addTag('games')
     .build();
 
