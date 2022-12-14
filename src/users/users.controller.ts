@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { UserDto } from './dto/userInput.dto';
 import { PartialUserDto } from './dto/partialUserInput.dto';
 import { IUserEntity } from './entities/user.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { HandleException } from 'src/util/exceptions/exceptionsHelper';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('users')
 @Controller('users')
@@ -26,11 +27,15 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findAll(): Promise<IUserEntity[]> {
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findOne(@Param('id') userId: string):Promise<IUserEntity>{
     try{
       return this.usersService.findOne(userId)
@@ -40,6 +45,8 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   async update(@Param('id') id: string, @Body() userData: UserDto):Promise<IUserEntity> {
     try{
       return await this.usersService.update(id, userData);
@@ -49,6 +56,8 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   async remove(@Param('id') userId: string):Promise<string> {
     const userIsDeleted = await this.usersService.remove(userId);
     if (userIsDeleted) {

@@ -1,5 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Res } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Res, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { HandleException } from "src/util/exceptions/exceptionsHelper";
 import { GameDto } from "./dto/gameInput.dto";
@@ -8,6 +9,8 @@ import { GamesService } from "./games.service";
 
 
 @ApiTags('games')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('games')
 export class GamesController {
   constructor(private readonly service: GamesService) {}

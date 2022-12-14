@@ -1,14 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { ProfileDto } from './dto/profileInput.dto';
 import { PartialProfileDto } from './dto/partialProfileInput.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { HandleException } from 'src/util/exceptions/exceptionsHelper';
 import { Profiles } from './entities/profile.entity';
 import { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @ApiTags('profiles')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('profiles')
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
