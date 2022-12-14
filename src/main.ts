@@ -13,9 +13,12 @@ async function bootstrap() {
     .setDescription('API to catalog a list of games.')
     .setVersion('1.0.0')
     .addTag('status')
+    .addTag('auth')
     .addTag('users')
     .addTag('games')
     .addTag('profiles')
+    .addTag('genres')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

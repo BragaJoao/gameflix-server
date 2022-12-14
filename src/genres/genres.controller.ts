@@ -3,7 +3,9 @@ import { GenresService } from './genres.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { Response, response } from 'express';
 import { HandleException } from 'src/util/exceptions/exceptionsHelper';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('genres')
 @Controller('genres')
 export class GenresController {
   constructor(private readonly genresService: GenresService) {}
